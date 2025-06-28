@@ -1,34 +1,113 @@
-body {
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    overflow: hidden; /* Prevent scrollbars on the body */
     background-color: #242424;
     color: #eafbd0;
     font-family: sans-serif;
-    margin: 0;
-    padding: 0;
+}
+
+#app-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+#live-view, #schedule-view {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.5s ease-in-out;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
+    flex-direction: column;
+}
+
+#live-view {
+    z-index: 1; /* Stays on bottom */
+}
+
+#schedule-view {
+    z-index: 2; /* Slides over the top */
+    transform: translateY(100%); /* Start off-screen (bottom) */
+    background-color: #242424; /* Give it a solid background */
+}
+
+#app-container.show-schedule #schedule-view {
+    transform: translateY(0); /* Slide in */
+}
+
+#main-header {
+    background-color: #245d48;
+    padding: 1rem;
+    text-align: center;
+    z-index: 3; /* Keep header on top */
+}
+
+h1 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+#main-container {
+    display: flex;
+    flex: 1;
+    position: relative; /* For iframe positioning */
 }
 
 #content {
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    flex: 1;
+    position: relative;
 }
 
 iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     border: none;
 }
 
+#sidebar {
+    writing-mode: vertical-rl;
+    background-color: #678c3f;
+    color: #eafbd0;
+    padding: 1rem;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px 0 0 10px;
+    cursor: pointer;
+    user-select: none;
+    width: 5%;
+}
+
+#main-footer {
+    background-color: #245d48;
+    padding: 1rem;
+    text-align: center;
+    border-radius: 0 0 10px 10px;
+    cursor: pointer;
+    user-select: none;
+    z-index: 3; /* Keep footer on top */
+}
+
+#schedule-container {
+    flex: 1;
+    overflow-y: auto; /* Allow scrolling within the schedule table */
+    padding: 1rem;
+}
+
 #schedule-table {
     border-collapse: collapse;
-    width: 90%;
+    width: 100%;
     max-width: 1200px;
-    margin: 2rem auto;
+    margin: 0 auto;
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
@@ -44,6 +123,9 @@ thead th {
     background-color: #245d48;
     color: #eafbd0;
     font-weight: bold;
+    position: sticky;
+    top: 0;
+    z-index: 1;
 }
 
 tbody tr:nth-child(even) {
