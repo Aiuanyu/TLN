@@ -1,0 +1,444 @@
+{
+  "monday": {
+    "00:00": null,
+    "01:00": null,
+    "02:00": null,
+    "03:00": null,
+    "04:00": null,
+    "05:00": null,
+    "06:00": {
+      "program_name": "民視六點晨間新聞",
+      "channel": "民視新聞台",
+      "url": "https://www.youtube.com/embed/ylYJSBUgaMA"
+    },
+    "07:00": null,
+    "08:00": {
+      "program_name": "旱安台灣台語新聞",
+      "channel": "台視主頻",
+      "url": "https://www.youtube.com/embed/uDqQo8a7Xmk"
+    },
+    "09:00": {
+      "program_name": "早起新聞",
+      "channel": "公視台語台",
+      "url": "https://www.youtube.com/embed/6KlRR_DGhmI"
+    },
+    "10:00": {
+      "program_name": "民視十點台語新聞",
+      "channel": "民視新聞台",
+      "url": "https://www.youtube.com/embed/ylYJSBUgaMA"
+    },
+    "11:00": {
+      "program_name": "台視 1100 台語新聞",
+      "channel": "台視新聞台",
+      "url": "https://www.youtube.com/embed/xL0ch83RAK8"
+    },
+    "12:00": {
+      "program_name": "公視中晝新聞",
+      "channel": "公視台語台",
+      "url": "https://www.youtube.com/embed/6KlRR_DGhmI"
+    },
+    "13:00": null,
+    "14:00": {
+      "program_name": "1400 台語新聞",
+      "channel": "鏡電視新聞台",
+      "url": "https://www.youtube.com/embed/5n0y6b0Q25o"
+    },
+    "15:00": {
+      "program_name": "下晡新聞",
+      "channel": "公視台語台",
+      "url": "https://www.youtube.com/embed/6KlRR_DGhmI"
+    },
+    "16:00": {
+      "program_name": "民視四點新聞",
+      "channel": "民視新聞台",
+      "url": "https://www.youtube.com/embed/ylYJSBUgaMA"
+    },
+    "17:00": null,
+    "18:00": null,
+    "19:00": {
+      "program_name": "下暗新聞",
+      "channel": "公視台語台",
+      "url": "https://www.youtube.com/embed/6KlRR_DGhmI"
+    },
+    "20:00": null,
+    "21:00": null,
+    "22:00": null,
+    "23:00": {
+      "program_name": "新聞世界通",
+      "channel": "公視台語台",
+      "url": "https://www.youtube.com/embed/6KlRR_DGhmI"
+    }
+  },
+  "tuesday": {
+    "00:00": null,
+    "01:00": null,
+    "02:00": null,
+    "03:00": null,
+    "04:00": null,
+    "05:00": null,
+    "06:00": {
+      "program_name": "民視六點晨間新聞",
+      "channel": "民視新聞台",
+      "url": "https://www.youtube.com/embed/ylYJSBUgaMA"
+    },
+    "07:00": null,
+    "08:00": {
+      "program_name": "旱安台灣台語新聞",
+      "channel": "台視主頻",
+      "url": "https://www.youtube.com/embed/uDqQo8a7Xmk"
+    },
+    "09:00": {
+      "program_name": "早起新聞",
+      "channel": "公視台語台",
+      "url": "https://www.youtube.com/embed/6KlRR_DGhmI"
+    },
+    "10:00": {
+      "program_name": "民視十點台語新聞",
+      "channel": "民視新聞台",
+      "url": "https://www.youtube.com/embed/ylYJSBUgaMA"
+    },
+    "11:00": {
+      "program_name": "台視 1100 台語新聞",
+      "channel": "台視新聞台",
+      "url": "https://www.youtube.com/embed/xL0ch83RAK8"
+    },
+    "12:00": {
+      "program_name": "公視中晝新聞",
+      "channel": "公視台語台",
+      "url": "https://www.youtube.com/embed/6KlRR_DGhmI"
+    },
+    "13:00": null,
+    "14:00": {
+      "program_name": "1400 台語新聞",
+      "channel": "鏡電視新聞台",
+      "url": "https://www.youtube.com/embed/5n0y6b0Q25o"
+    },
+    "15:00": {
+      "program_name": "下晡新聞",
+      "channel": "公視台語台",
+      "url": "https://www.youtube.com/embed/6KlRR_DGhmI"
+    },
+    "16:00": {
+      "program_name": "民視四點新聞",
+      "channel": "民視新聞台",
+      "url": "https://www.youtube.com/embed/ylYJSBUgaMA"
+    },
+    "17:00": null,
+    "18:00": null,
+    "19:00": {
+      "program_name": "下暗新聞",
+      "channel": "公視台語台",
+      "url": "https://www.youtube.com/embed/6KlRR_DGhmI"
+    },
+    "20:00": null,
+    "21:00": null,
+    "22:00": null,
+    "23:00": {
+      "program_name": "新聞世界通",
+      "channel": "公視台語台",
+      "url": "https://www.youtube.com/embed/6KlRR_DGhmI"
+    }
+  },
+  "wednesday": {
+    "00:00": null,
+    "01:00": null,
+    "02:00": null,
+    "03:00": null,
+    "04:00": null,
+    "05:00": null,
+    "06:00": {
+      "program_name": "民視六點晨間新聞",
+      "channel": "民視新聞台",
+      "url": "https://www.youtube.com/embed/ylYJSBUgaMA"
+    },
+    "07:00": null,
+    "08:00": {
+      "program_name": "旱安台灣台語新聞",
+      "channel": "台視主頻",
+      "url": "https://www.youtube.com/embed/uDqQo8a7Xmk"
+    },
+    "09:00": {
+      "program_name": "早起新聞",
+      "channel": "公視台語台",
+      "url": "https://www.youtube.com/embed/6KlRR_DGhmI"
+    },
+    "10:00": {
+      "program_name": "民視十點台語新聞",
+      "channel": "民視新聞台",
+      "url": "https://www.youtube.com/embed/ylYJSBUgaMA"
+    },
+    "11:00": {
+      "program_name": "台視 1100 台語新聞",
+      "channel": "台視新聞台",
+      "url": "https://www.youtube.com/embed/xL0ch83RAK8"
+    },
+    "12:00": {
+      "program_name": "公視中晝新聞",
+      "channel": "公視台語台",
+      "url": "https://www.youtube.com/embed/6KlRR_DGhmI"
+    },
+    "13:00": null,
+    "14:00": {
+      "program_name": "1400 台語新聞",
+      "channel": "鏡電視新聞台",
+      "url": "https://www.youtube.com/embed/5n0y6b0Q25o"
+    },
+    "15:00": {
+      "program_name": "下晡新聞",
+      "channel": "公視台語台",
+      "url": "https://www.youtube.com/embed/6KlRR_DGhmI"
+    },
+    "16:00": {
+      "program_name": "民視四點新聞",
+      "channel": "民視新聞台",
+      "url": "https://www.youtube.com/embed/ylYJSBUgaMA"
+    },
+    "17:00": null,
+    "18:00": null,
+    "19:00": {
+      "program_name": "下暗新聞",
+      "channel": "公視台語台",
+      "url": "https://www.youtube.com/embed/6KlRR_DGhmI"
+    },
+    "20:00": null,
+    "21:00": null,
+    "22:00": null,
+    "23:00": {
+      "program_name": "新聞世界通",
+      "channel": "公視台語台",
+      "url": "https://www.youtube.com/embed/6KlRR_DGhmI"
+    }
+  },
+  "thursday": {
+    "00:00": null,
+    "01:00": null,
+    "02:00": null,
+    "03:00": null,
+    "04:00": null,
+    "05:00": null,
+    "06:00": {
+      "program_name": "民視六點晨間新聞",
+      "channel": "民視新聞台",
+      "url": "https://www.youtube.com/embed/ylYJSBUgaMA"
+    },
+    "07:00": null,
+    "08:00": {
+      "program_name": "旱安台灣台語新聞",
+      "channel": "台視主頻",
+      "url": "https://www.youtube.com/embed/uDqQo8a7Xmk"
+    },
+    "09:00": {
+      "program_name": "早起新聞",
+      "channel": "公視台語台",
+      "url": "https://www.youtube.com/embed/6KlRR_DGhmI"
+    },
+    "10:00": {
+      "program_name": "民視十點台語新聞",
+      "channel": "民視新聞台",
+      "url": "https://www.youtube.com/embed/ylYJSBUgaMA"
+    },
+    "11:00": {
+      "program_name": "台視 1100 台語新聞",
+      "channel": "台視新聞台",
+      "url": "https://www.youtube.com/embed/xL0ch83RAK8"
+    },
+    "12:00": {
+      "program_name": "公視中晝新聞",
+      "channel": "公視台語台",
+      "url": "https://www.youtube.com/embed/6KlRR_DGhmI"
+    },
+    "13:00": null,
+    "14:00": {
+      "program_name": "1400 台語新聞",
+      "channel": "鏡電視新聞台",
+      "url": "https://www.youtube.com/embed/5n0y6b0Q25o"
+    },
+    "15:00": {
+      "program_name": "下晡新聞",
+      "channel": "公視台語台",
+      "url": "https://www.youtube.com/embed/6KlRR_DGhmI"
+    },
+    "16:00": {
+      "program_name": "民視四點新聞",
+      "channel": "民視新聞台",
+      "url": "https://www.youtube.com/embed/ylYJSBUgaMA"
+    },
+    "17:00": null,
+    "18:00": null,
+    "19:00": {
+      "program_name": "下暗新聞",
+      "channel": "公視台語台",
+      "url": "https://www.youtube.com/embed/6KlRR_DGhmI"
+    },
+    "20:00": null,
+    "21:00": null,
+    "22:00": null,
+    "23:00": {
+      "program_name": "新聞世界通",
+      "channel": "公視台語台",
+      "url": "https://www.youtube.com/embed/6KlRR_DGhmI"
+    }
+  },
+  "friday": {
+    "00:00": null,
+    "01:00": null,
+    "02:00": null,
+    "03:00": null,
+    "04:00": null,
+    "05:00": null,
+    "06:00": {
+      "program_name": "民視六點晨間新聞",
+      "channel": "民視新聞台",
+      "url": "https://www.youtube.com/embed/ylYJSBUgaMA"
+    },
+    "07:00": null,
+    "08:00": {
+      "program_name": "旱安台灣台語新聞",
+      "channel": "台視主頻",
+      "url": "https://www.youtube.com/embed/uDqQo8a7Xmk"
+    },
+    "09:00": {
+      "program_name": "早起新聞",
+      "channel": "公視台語台",
+      "url": "https://www.youtube.com/embed/6KlRR_DGhmI"
+    },
+    "10:00": {
+      "program_name": "民視十點台語新聞",
+      "channel": "民視新聞台",
+      "url": "https://www.youtube.com/embed/ylYJSBUgaMA"
+    },
+    "11:00": {
+      "program_name": "台視 1100 台語新聞",
+      "channel": "台視新聞台",
+      "url": "https://www.youtube.com/embed/xL0ch83RAK8"
+    },
+    "12:00": {
+      "program_name": "公視中晝新聞",
+      "channel": "公視台語台",
+      "url": "https://www.youtube.com/embed/6KlRR_DGhmI"
+    },
+    "13:00": null,
+    "14:00": {
+      "program_name": "1400 台語新聞",
+      "channel": "鏡電視新聞台",
+      "url": "https://www.youtube.com/embed/5n0y6b0Q25o"
+    },
+    "15:00": {
+      "program_name": "下晡新聞",
+      "channel": "公視台語台",
+      "url": "https://www.youtube.com/embed/6KlRR_DGhmI"
+    },
+    "16:00": {
+      "program_name": "民視四點新聞",
+      "channel": "民視新聞台",
+      "url": "https://www.youtube.com/embed/ylYJSBUgaMA"
+    },
+    "17:00": null,
+    "18:00": null,
+    "19:00": {
+      "program_name": "下暗新聞",
+      "channel": "公視台語台",
+      "url": "https://www.youtube.com/embed/6KlRR_DGhmI"
+    },
+    "20:00": null,
+    "21:00": null,
+    "22:00": null,
+    "23:00": {
+      "program_name": "新聞世界通",
+      "channel": "公視台語台",
+      "url": "https://www.youtube.com/embed/6KlRR_DGhmI"
+    }
+  },
+  "saturday": {
+    "00:00": null,
+    "01:00": null,
+    "02:00": null,
+    "03:00": null,
+    "04:00": null,
+    "05:00": null,
+    "06:00": {
+      "program_name": "民視六點晨間新聞",
+      "channel": "民視新聞台",
+      "url": "https://www.youtube.com/embed/ylYJSBUgaMA"
+    },
+    "07:00": null,
+    "08:00": null,
+    "09:00": null,
+    "10:00": null,
+    "11:00": null,
+    "12:00": {
+      "program_name": "新聞看南風",
+      "channel": "公視台語台",
+      "url": "https://www.youtube.com/embed/6KlRR_DGhmI"
+    },
+    "13:00": null,
+    "14:00": {
+      "program_name": "台語報萬事",
+      "channel": "鏡電視新聞台",
+      "url": "https://www.youtube.com/embed/5n0y6b0Q25o"
+    },
+    "15:00": {
+      "program_name": "下晡新聞",
+      "channel": "公視台語台",
+      "url": "https://www.youtube.com/embed/6KlRR_DGhmI"
+    },
+    "16:00": null,
+    "17:00": null,
+    "18:00": null,
+    "19:00": {
+      "program_name": "下暗新聞",
+      "channel": "公視台語台",
+      "url": "https://www.youtube.com/embed/6KlRR_DGhmI"
+    },
+    "20:00": null,
+    "21:00": null,
+    "22:00": null,
+    "23:00": null
+  },
+  "sunday": {
+    "00:00": null,
+    "01:00": null,
+    "02:00": null,
+    "03:00": null,
+    "04:00": null,
+    "05:00": null,
+    "06:00": {
+      "program_name": "民視六點晨間新聞",
+      "channel": "民視新聞台",
+      "url": "https://www.youtube.com/embed/ylYJSBUgaMA"
+    },
+    "07:00": null,
+    "08:00": null,
+    "09:00": null,
+    "10:00": null,
+    "11:00": null,
+    "12:00": {
+      "program_name": "公民，咱的新聞",
+      "channel": "公視台語台",
+      "url": "https://www.youtube.com/embed/6KlRR_DGhmI"
+    },
+    "13:00": null,
+    "14:00": {
+      "program_name": "台語報萬事",
+      "channel": "鏡電視新聞台",
+      "url": "https://www.youtube.com/embed/5n0y6b0Q25o"
+    },
+    "15:00": {
+      "program_name": "下晡新聞",
+      "channel": "公視台語台",
+      "url": "https://www.youtube.com/embed/6KlRR_DGhmI"
+    },
+    "16:00": null,
+    "17:00": null,
+    "18:00": null,
+    "19:00": {
+      "program_name": "下暗新聞",
+      "channel": "公視台語台",
+      "url": "https://www.youtube.com/embed/6KlRR_DGhmI"
+    },
+    "20:00": null,
+    "21:00": null,
+    "22:00": null,
+    "23:00": null
+  }
+}
