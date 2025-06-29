@@ -31,7 +31,7 @@ html, body {
 }
 
 #schedule-view {
-    z-index: 2; /* Slides over the top */
+    z-index: 10; /* Slides over the top, needs to be higher than other elements */
     transform: translateY(100%); /* Start off-screen (bottom) */
     background-color: #242424; /* Give it a solid background */
 }
@@ -40,11 +40,34 @@ html, body {
     transform: translateY(0); /* Slide in */
 }
 
+#close-schedule-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: #aa96b7;
+    color: #242424;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 2rem;
+    line-height: 40px;
+    text-align: center;
+    cursor: pointer;
+    z-index: 12;
+    opacity: 0.8;
+}
+
+#close-schedule-btn:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
 #main-header {
     background-color: #245d48;
     padding: 1rem;
     text-align: center;
-    z-index: 3; /* Keep header on top */
+    z-index: 3;
 }
 
 h1 {
@@ -55,7 +78,7 @@ h1 {
 #main-container {
     display: flex;
     flex: 1;
-    position: relative; /* For iframe positioning */
+    position: relative;
 }
 
 #content {
@@ -85,6 +108,7 @@ iframe {
     cursor: pointer;
     user-select: none;
     width: 5%;
+    z-index: 2;
 }
 
 #main-footer {
@@ -94,13 +118,14 @@ iframe {
     border-radius: 0 0 10px 10px;
     cursor: pointer;
     user-select: none;
-    z-index: 3; /* Keep footer on top */
+    z-index: 3;
 }
 
 #schedule-container {
     flex: 1;
-    overflow-y: auto; /* Allow scrolling within the schedule table */
+    overflow-y: auto;
     padding: 1rem;
+    padding-top: 60px; /* Add padding to avoid close button overlap */
 }
 
 #schedule-table {
@@ -152,4 +177,16 @@ tbody tr:hover {
 .channel-name {
     font-style: italic;
     color: #aa96b7;
+}
+
+.current-timeslot {
+    background-color: #eafbd0 !important;
+    color: #242424 !important;
+    border: 2px solid #678c3f;
+    cursor: pointer;
+}
+
+.current-timeslot .program-name,
+.current-timeslot .channel-name {
+    color: #245d48;
 }

@@ -1,0 +1,18 @@
+# 節目圖片搜尋連結
+
+- [1400 台語新聞](https://www.google.com/search?q=1400%20%E5%8F%B0%E8%AA%9E%E6%96%B0%E8%81%9E&udm=2)
+- [下晡新聞](https://www.google.com/search?q=%E4%B8%8B%E6%99%A1%E6%96%B0%E8%81%9E&udm=2)
+- [下暗新聞](https://www.google.com/search?q=%E4%B8%8B%E6%9A%97%E6%96%B0%E8%81%9E&udm=2)
+- [公民，咱的新聞](https://www.google.com/search?q=%E5%85%AC%E6%B0%91%EF%BC%8C%E5%92%B1%E7%9A%84%E6%96%B0%E8%81%9E&udm=2)
+- [台視 1100 台語新聞](https://www.google.com/search?q=%E5%8F%B0%E8%A6%96%201100%20%E5%8F%B0%E8%AA%9E%E6%96%B0%E8%81%9E&udm=2)
+- [台語報萬事](https://www.google.com/search?q=%E5%8F%B0%E8%AA%9E%E5%A0%B1%E8%90%AC%E4%BA%8B&udm=2)
+- [旱安台灣台語新聞](https://www.google.com/search?q=%E6%97%B1%E5%AE%89%E5%8F%B0%E7%81%A3%E5%8F%B0%E8%AA%9E%E6%96%B0%E8%81%9E&udm=2)
+- [早起新聞](https://www.google.com/search?q=%E6%97%A9%E8%B5%B7%E6%96%B0%E8%81%9E&udm=2)
+- [民視無線午間新聞](https://www.google.com/search?q=%E6%B0%91%E8%A6%96%E7%84%A1%E7%B7%9A%E5%8D%88%E9%96%93%E6%96%B0%E8%81%9E&udm=2)
+- [民視六點晨間新聞](https://www.google.com/search?q=%E6%B0%91%E8%A6%96%E5%85%AD%E9%BB%9E%E6%99%A8%E9%96%93%E6%96%B0%E8%81%9E&udm=2)
+- [民視四點新聞](https://www.google.com/search?q=%E6%B0%91%E8%A6%96%E5%9B%9B%E9%BB%9E%E6%96%B0%E8%81%9E&udm=2)
+- [民視十點台語新聞](https://www.google.com/search?q=%E6%B0%91%E8%A6%96%E5%8D%81%E9%BB%9E%E5%8F%B0%E8%AA%9E%E6%96%B0%E8%81%9E&udm=2)
+- [新聞世界通](https://www.google.com/search?q=%E6%96%B0%E8%81%9E%E4%B8%96%E7%95%8C%E9%80%9A&udm=2)
+- [新聞看南風](https://www.google.com/search?q=%E6%96%B0%E8%81%9E%E7%9C%8B%E5%8D%97%E9%A2%A8&udm=2)
+- [華視在地新聞](https://www.google.com/search?q=%E8%8F%AF%E8%A6%96%E5%9C%A8%E5%9C%B0%E6%96%B0%E8%81%9E&udm=2)
+- [公視中晝新聞](https://www.google.com/search?q=%E5%85%AC%E8%A6%96%E4%B8%AD%E6%99%9D%E6%96%B0%E8%81%9E&udm=2)

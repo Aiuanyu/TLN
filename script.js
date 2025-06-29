@@ -11,17 +11,18 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then(schedule => {
             scheduleData = schedule;
-            // Always build the schedule table for later use
-            displaySchedule(scheduleData);
+            const now = new Date();
+            const dayIndex = now.getDay();
+            const hour = now.getHours();
+
+            // Always build the schedule table for later use and highlight the current time
+            displaySchedule(scheduleData, dayIndex, hour);
 
             // Start the clock
             updateTime();
             setInterval(updateTime, 1000);
 
-            const now = new Date();
             const dayOfWeek = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
-            const dayIndex = now.getDay();
-            const hour = now.getHours();
             const hourKey = hour.toString().padStart(2, '0') + ":00";
             const currentProgram = schedule[dayOfWeek[dayIndex]]?.[hourKey];
 
@@ -29,9 +30,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 embedLiveStream(currentProgram, schedule, dayIndex, hour);
                 setupViewToggleListeners();
             } else {
-                // No program now, show the schedule immediately
-                toggleScheduleView(true);
+                toggleScheduleView(true); // No program now, show the schedule immediately
             }
+            
+            // Setup listeners to close the schedule view
+            setupCloseListeners();
         })
         .catch(error => {
             console.error('Error fetching schedule:', error);
@@ -39,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if(contentDiv) contentDiv.innerText = '無法載入節目表。';
         });
 
-    // --- View Toggling Logic ---
+    // --- View Toggling and Closing Logic ---
     function toggleScheduleView(forceShow = null) {
         isScheduleVisible = forceShow !== null ? forceShow : !isScheduleVisible;
         appContainer.classList.toggle('show-schedule', isScheduleVisible);
@@ -53,10 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
         sidebar.addEventListener('click', () => toggleScheduleView());
         footer.addEventListener('click', () => toggleScheduleView());
 
-        // Swipe detection
-        let touchstartY = 0;
-        let touchstartX = 0;
-
+        let touchstartY = 0, touchstartX = 0;
         liveView.addEventListener('touchstart', e => {
             touchstartY = e.changedTouches[0].screenY;
             touchstartX = e.changedTouches[0].screenX;
@@ -65,19 +65,61 @@ document.addEventListener('DOMContentLoaded', () => {
         liveView.addEventListener('touchend', e => {
             const touchendY = e.changedTouches[0].screenY;
             const touchendX = e.changedTouches[0].screenX;
-            handleSwipe(touchendY - touchstartY, touchendX - touchstartX);
+            if (Math.abs(touchendY - touchstartY) > 50 || Math.abs(touchendX - touchstartX) > 50) {
+                toggleScheduleView();
+            }
+        });
+
+        // Listen for mouse wheel events on desktop
+        liveView.addEventListener('wheel', e => {
+            // Check for significant movement in either X or Y direction
+            if (Math.abs(e.deltaY) > 1 || Math.abs(e.deltaX) > 1) {
+                e.preventDefault(); // Prevent the page from scrolling
+                toggleScheduleView();
+            }
+        }, { passive: false });
+
+        // Listen for mouse drag events on desktop
+        let isDragging = false;
+        let dragStartX = 0;
+        let dragStartY = 0;
+
+        liveView.addEventListener('mousedown', e => {
+            isDragging = true;
+            dragStartX = e.screenX;
+            dragStartY = e.screenY;
+        });
+
+        liveView.addEventListener('mousemove', e => {
+            if (isDragging) {
+                const deltaX = e.screenX - dragStartX;
+                const deltaY = e.screenY - dragStartY;
+                // Use a lower threshold for drag detection
+                if (Math.abs(deltaX) > 30 || Math.abs(deltaY) > 30) {
+                    isDragging = false; // Stop tracking after the first trigger
+                    toggleScheduleView();
+                }
+            }
+        });
+
+        liveView.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+
+        liveView.addEventListener('mouseleave', () => {
+            isDragging = false;
         });
     }
 
-    function handleSwipe(deltaY, deltaX) {
-        // Check for vertical swipe, with more tolerance for vertical than horizontal movement
-        if (Math.abs(deltaY) > Math.abs(deltaX) && Math.abs(deltaY) > 50) { 
-            toggleScheduleView();
-        }
-        // Check for horizontal swipe
-        if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 50) {
-            toggleScheduleView();
-        }
+    function setupCloseListeners() {
+        const closeBtn = document.getElementById('close-schedule-btn');
+        closeBtn.addEventListener('click', () => toggleScheduleView(false));
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && isScheduleVisible) {
+                toggleScheduleView(false);
+            }
+        });
     }
 
     // --- Content Update Functions ---
@@ -95,15 +137,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function findNextProgram(schedule, startDayIndex, startHour) {
         const dayOfWeek = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
-        let currentDayIndex = startDayIndex;
         for (let h = startHour + 1; h < 24; h++) {
             const hourKey = h.toString().padStart(2, '0') + ":00";
-            const dayKey = dayOfWeek[currentDayIndex];
-            if (schedule[dayKey]?.[hourKey]) return { hour: hourKey, ...schedule[dayKey][hourKey] };
+            if (schedule[dayOfWeek[startDayIndex]]?.[hourKey]) return { hour: hourKey, ...schedule[dayOfWeek[startDayIndex]][hourKey] };
         }
         for (let i = 1; i < 7; i++) {
-            currentDayIndex = (startDayIndex + i) % 7;
-            const dayKey = dayOfWeek[currentDayIndex];
+            const dayIndex = (startDayIndex + i) % 7;
+            const dayKey = dayOfWeek[dayIndex];
             if (schedule[dayKey]) {
                 for (let h = 0; h < 24; h++) {
                     const hourKey = h.toString().padStart(2, '0') + ":00";
@@ -118,9 +158,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const contentDiv = document.getElementById('content');
         contentDiv.innerHTML = '';
         const iframe = document.createElement('iframe');
-        iframe.src = program.url + "?autoplay=1"; // Add autoplay
+        iframe.src = program.url;
         iframe.setAttribute('frameborder', '0');
-        iframe.setAttribute('allow', 'autoplay; accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
+        iframe.setAttribute('allow', 'accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
         iframe.setAttribute('allowfullscreen', 'true');
         contentDiv.appendChild(iframe);
 
@@ -133,20 +173,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function displaySchedule(schedule) {
+    function displaySchedule(schedule, currentDayIndex, currentHour) {
         const container = document.getElementById('schedule-container');
-        container.innerHTML = ''; // Clear previous content
+        container.innerHTML = '';
         const table = document.createElement('table');
         table.id = 'schedule-table';
 
         const thead = document.createElement('thead');
         const headerRow = document.createElement('tr');
         const daysHeader = ['時間', '星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
-        daysHeader.forEach(dayText => {
-            const th = document.createElement('th');
-            th.innerText = dayText;
-            headerRow.appendChild(th);
-        });
+        daysHeader.forEach(dayText => headerRow.appendChild(Object.assign(document.createElement('th'), { innerText: dayText })));
         thead.appendChild(headerRow);
         table.appendChild(thead);
 
@@ -155,17 +191,22 @@ document.addEventListener('DOMContentLoaded', () => {
         for (let hour = 0; hour < 24; hour++) {
             const row = document.createElement('tr');
             const hourKey = hour.toString().padStart(2, '0') + ":00";
-            const timeCell = document.createElement('td');
-            timeCell.innerHTML = `<div class="time-slot">${hourKey}</div>`;
-            row.appendChild(timeCell);
-            for (let i = 0; i < 7; i++) {
-                const dayKey = dayKeys[i];
+            row.appendChild(Object.assign(document.createElement('td'), { innerHTML: `<div class="time-slot">${hourKey}</div>` }));
+            
+            for (let dayIndex = 0; dayIndex < 7; dayIndex++) {
                 const cell = document.createElement('td');
-                const program = schedule[dayKey]?.[hourKey];
+                const program = schedule[dayKeys[dayIndex]]?.[hourKey];
+                
                 if (program) {
                     cell.innerHTML = `<div class="program-name">${program.program_name}</div><div class="channel-name">${program.channel}</div>`;
                 } else {
-                    cell.innerHTML = '-';
+                    cell.innerHTML = ' - ';
+                }
+
+                if (dayIndex === currentDayIndex && hour === currentHour) {
+                    cell.classList.add('current-timeslot');
+                    cell.innerHTML = `<b>這馬</b><br>` + cell.innerHTML;
+                    cell.addEventListener('click', () => toggleScheduleView(false));
                 }
                 row.appendChild(cell);
             }
