@@ -217,22 +217,24 @@ document.addEventListener('DOMContentLoaded', () => {
         
         contentDiv.innerHTML = ''; // Clear standby content
 
-        const iframe = document.createElement('iframe');
-        let videoUrl = program.url;
-        // For YouTube videos, add parameters for a better embedded experience
-        if (videoUrl.includes("youtube.com/embed")) {
-            const url = new URL(videoUrl);
-            url.searchParams.set('autoplay', '1');
-            url.searchParams.set('mute', '1');
-            // Specifying origin can sometimes help with embed restrictions.
-            url.searchParams.set('origin', window.location.origin);
-            videoUrl = url.toString();
+        if (program.channel === "台視新聞台") {
+            contentDiv.innerHTML = `
+                <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; text-align: center; padding: 2rem;">
+                    <h2>無法直接在此播放</h2>
+                    <p>台視新聞台因頻道政策因素，無法直接嵌入播放。</p>
+                    <a href="${program.url}" target="_blank" rel="noopener noreferrer" style="padding: 1rem 2rem; background-color: #c00; color: white; text-decoration: none; border-radius: 5px; font-size: 1.2rem; margin-top: 1rem;">
+                        點此前往官方頁面觀看
+                    </a>
+                </div>
+            `;
+        } else {
+            const iframe = document.createElement('iframe');
+            iframe.src = program.url;
+            iframe.setAttribute('frameborder', '0');
+            iframe.setAttribute('allow', 'accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
+            iframe.setAttribute('allowfullscreen', 'true');
+            contentDiv.appendChild(iframe);
         }
-        iframe.src = videoUrl;
-        iframe.setAttribute('frameborder', '0');
-        iframe.setAttribute('allow', 'accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
-        iframe.setAttribute('allowfullscreen', 'true');
-        contentDiv.appendChild(iframe);
     }
 
     function checkAndUpdateContent() {
