@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const appContainer = document.getElementById('app-container');
     let scheduleData = null;
     let isScheduleVisible = false;
+    let currentProgramState = null; // Holds the currently displayed program object or null for standby
 
     // --- Main Execution ---
     fetch('schedule.json')
@@ -11,29 +12,29 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then(schedule => {
             scheduleData = schedule;
-            const now = new Date();
-            const dayIndex = now.getDay();
-            const hour = now.getHours();
-
-            // Always build the schedule table for later use and highlight the current time
-            displaySchedule(scheduleData, dayIndex, hour);
-
             // Start the clock
             updateTime();
             setInterval(updateTime, 1000);
 
-            const dayOfWeek = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
-            const hourKey = hour.toString().padStart(2, '0') + ":00";
-            const currentProgram = schedule[dayOfWeek[dayIndex]]?.[hourKey];
+            // Set initial content and schedule precise hourly updates
+            checkAndUpdateContent();
 
-            // Always find and display the next program info
-            updateNextProgramInfo(schedule, dayIndex, hour);
+            function scheduleHourlyChecks() {
+                const now = new Date();
+                // Set target to 5 seconds past the next hour for reliability
+                const nextHour = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours() + 1, 0, 5, 0);
+                const msUntilNextHour = nextHour - now;
 
-            if (currentProgram && currentProgram.url) {
-                embedLiveStream(currentProgram);
-            } else {
-                showStandbyScreen();
+                console.log(`Next hourly check scheduled in ${Math.round(msUntilNextHour / 1000 / 60)} minutes.`);
+
+                setTimeout(() => {
+                    console.log('Performing scheduled hourly content check.');
+                    checkAndUpdateContent();
+                    // After the first precise check, run every hour thereafter
+                    setInterval(checkAndUpdateContent, 3600 * 1000);
+                }, msUntilNextHour);
             }
+            scheduleHourlyChecks();
             // Always setup the listeners
             setupViewToggleListeners();
             setupCloseListeners();
@@ -48,6 +49,20 @@ document.addEventListener('DOMContentLoaded', () => {
     function toggleScheduleView(forceShow = null) {
         isScheduleVisible = forceShow !== null ? forceShow : !isScheduleVisible;
         appContainer.classList.toggle('show-schedule', isScheduleVisible);
+
+        // Scroll the current timeslot into view when the schedule is shown
+        if (isScheduleVisible) {
+            // Use a timeout to allow the CSS transition to start, ensuring the element is visible before scrolling.
+            setTimeout(() => {
+                const currentTimeslot = document.querySelector('.current-timeslot');
+                if (currentTimeslot) {
+                    currentTimeslot.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+                }
+            }, 100); // 100ms delay is usually sufficient for the transition to begin.
+        }
     }
 
     function setupViewToggleListeners() {
@@ -158,10 +173,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function showStandbyScreen() {
         const contentDiv = document.getElementById('content');
-        const noLiveMessage = document.getElementById('no-live-message');
+        const programInfoEl = document.getElementById('program-info');
 
-        noLiveMessage.innerText = '這馬無咧播，期待後一个時段。嘛會使聽音樂';
-        noLiveMessage.style.display = 'block';
+        programInfoEl.innerHTML = '這馬無咧播，期待後一个時段。<a href="#" id="listen-music-link">嘛會使聽音樂</a>';
+        programInfoEl.style.display = 'block';
+
+        const listenLink = document.getElementById('listen-music-link');
+        if (listenLink) {
+            listenLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                toggleScheduleView(false);
+            });
+        }
 
         contentDiv.innerHTML = `
             <iframe style="border-radius:12px" 
@@ -187,17 +210,71 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function embedLiveStream(program) {
         const contentDiv = document.getElementById('content');
-        const noLiveMessage = document.getElementById('no-live-message');
+        const programInfoEl = document.getElementById('program-info');
         
-        noLiveMessage.style.display = 'none'; // Hide the standby message
+        programInfoEl.innerHTML = `${program.channel} - ${program.program_name}，請點放送，嘛會使<a href="${program.url}" target="_blank" rel="noopener noreferrer">點去官方頁面</a>`;
+        programInfoEl.style.display = 'block';
+        
         contentDiv.innerHTML = ''; // Clear standby content
 
         const iframe = document.createElement('iframe');
-        iframe.src = program.url;
+        let videoUrl = program.url;
+        // For YouTube videos, add parameters for a better embedded experience
+        if (videoUrl.includes("youtube.com/embed")) {
+            const url = new URL(videoUrl);
+            url.searchParams.set('autoplay', '1');
+            url.searchParams.set('mute', '1');
+            // Specifying origin can sometimes help with embed restrictions.
+            url.searchParams.set('origin', window.location.origin);
+            videoUrl = url.toString();
+        }
+        iframe.src = videoUrl;
         iframe.setAttribute('frameborder', '0');
         iframe.setAttribute('allow', 'accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
         iframe.setAttribute('allowfullscreen', 'true');
         contentDiv.appendChild(iframe);
+    }
+
+    function checkAndUpdateContent() {
+        if (!scheduleData) return;
+
+        const now = new Date();
+        const dayIndex = now.getDay();
+        const hour = now.getHours();
+        const dayOfWeek = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
+        const hourKey = hour.toString().padStart(2, '0') + ":00";
+        const targetProgram = scheduleData[dayOfWeek[dayIndex]]?.[hourKey];
+
+        const targetProgramUrl = targetProgram?.url || null;
+        const currentProgramUrl = currentProgramState?.url || null;
+
+        // Only update if the program has changed
+        if (targetProgramUrl !== currentProgramUrl) {
+            console.log(`Updating content for ${hourKey}. New program: ${targetProgram?.program_name || 'Standby'}`);
+            
+            // Update main content view
+            if (targetProgram && targetProgram.url) {
+                embedLiveStream(targetProgram);
+                currentProgramState = targetProgram;
+                // If there's a live program, ensure the schedule is hidden by default
+                if (isScheduleVisible) {
+                    toggleScheduleView(false);
+                }
+            } else {
+                showStandbyScreen();
+                currentProgramState = null;
+                // If there's no live program, show the schedule by default
+                if (!isScheduleVisible) {
+                    toggleScheduleView(true);
+                }
+            }
+
+            // Update footer with the next program's info
+            updateNextProgramInfo(scheduleData, dayIndex, hour);
+            
+            // Re-draw the schedule to update the 'current-timeslot' highlight
+            displaySchedule(scheduleData, dayIndex, hour);
+        }
     }
 
     function displaySchedule(schedule, currentDayIndex, currentHour) {
@@ -225,7 +302,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 const program = schedule[dayKeys[dayIndex]]?.[hourKey];
                 
                 if (program) {
-                    cell.innerHTML = `<div class="program-name">${program.program_name}</div><div class="channel-name">${program.channel}</div>`;
+                    const channelDisplay = program.url
+                        ? `<a href="${program.url}" target="_blank" rel="noopener noreferrer">⛓️ ${program.channel}</a>`
+                        : program.channel;
+                    cell.innerHTML = `<div class="program-name">${program.program_name}</div><div class="channel-name">${channelDisplay}</div>`;
                 } else {
                     cell.innerHTML = ' - ';
                 }
