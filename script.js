@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const appContainer = document.getElementById('app-container');
     let scheduleData = null;
     let isScheduleVisible = false;
-    let currentProgramState = null; // Holds the currently displayed program object or null for standby
+    let currentProgramState = {}; // Initialize with a non-null value to ensure the first check always runs
 
     // --- Main Execution ---
     fetch('schedule.json')
@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
             updateTime();
             setInterval(updateTime, 1000);
 
-            // Set initial content and schedule precise hourly updates
+            // Set initial content and start periodic checks for updates
             checkAndUpdateContent();
 
             function scheduleHourlyChecks() {
@@ -35,6 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }, msUntilNextHour);
             }
             scheduleHourlyChecks();
+
             // Always setup the listeners
             setupViewToggleListeners();
             setupCloseListeners();
@@ -247,11 +248,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const hourKey = hour.toString().padStart(2, '0') + ":00";
         const targetProgram = scheduleData[dayOfWeek[dayIndex]]?.[hourKey];
 
-        const targetProgramUrl = targetProgram?.url || null;
-        const currentProgramUrl = currentProgramState?.url || null;
-
-        // Only update if the program has changed
-        if (targetProgramUrl !== currentProgramUrl) {
+        // A more robust check: compare the program objects directly.
+        // JSON.stringify is a simple way to deep-compare the relevant data.
+        if (JSON.stringify(targetProgram) !== JSON.stringify(currentProgramState)) {
             console.log(`Updating content for ${hourKey}. New program: ${targetProgram?.program_name || 'Standby'}`);
             
             // Update main content view
