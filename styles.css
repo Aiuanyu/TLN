@@ -1,18 +1,31 @@
-html, body {
+html {
+    height: 100%;
+    width: 100%;
+}
+
+body {
     margin: 0;
     padding: 0;
     height: 100%;
     width: 100%;
-    overflow: hidden; /* Prevent scrollbars on the body */
     background-color: #242424;
     color: #eafbd0;
     font-family: sans-serif;
+    display: flex;
+    flex-direction: column;
+}
+
+#main-header {
+    background-color: #245d48;
+    padding: 1rem;
+    text-align: center;
+    z-index: 11; /* Ensure header is above schedule view */
+    position: relative; /* Needed for z-index to work properly */
 }
 
 #app-container {
     position: relative;
-    width: 100%;
-    height: 100%;
+    flex: 1; /* Take up remaining space */
 }
 
 #live-view, #schedule-view {
@@ -75,6 +88,13 @@ h1 {
     font-size: 1.5rem;
 }
 
+h2#no-live-message {
+    margin: 0.5rem 0 0;
+    font-size: 1rem;
+    color: #aa96b7;
+    font-style: italic;
+}
+
 #main-container {
     display: flex;
     flex: 1;
@@ -125,7 +145,6 @@ iframe {
     flex: 1;
     overflow-y: auto;
     padding: 1rem;
-    padding-top: 60px; /* Add padding to avoid close button overlap */
 }
 
 #schedule-table {
@@ -134,8 +153,8 @@ iframe {
     max-width: 1200px;
     margin: 0 auto;
     border-radius: 10px;
-    overflow: hidden;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    margin-top: 44px; /* Create space for the close button, 60px total (1rem padding + 44px margin) */
 }
 
 th, td {
@@ -148,6 +167,7 @@ thead th {
     background-color: #245d48;
     color: #eafbd0;
     font-weight: bold;
+    position: -webkit-sticky;
     position: sticky;
     top: 0;
     z-index: 1;

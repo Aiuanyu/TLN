@@ -3,16 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>電視排程</title>
+    <title>規工看臺語新聞</title>
     <link rel="stylesheet" href="styles.css">
 </head>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-1F05GMPHZ2"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'G-1F05GMPHZ2');
+</script>
+
 <body>
+    <header id="main-header">
+        <h1>規工看臺員話新聞，這馬時間：<span id="current-time"></span></h1>
+        <h2 id="no-live-message" style="display: none;"></h2>
+    </header>
+
     <div id="app-container">
         <!-- Live Stream View -->
         <div id="live-view">
-            <header id="main-header">
-                <h1>規工看臺員話新聞，這馬時間：<span id="current-time"></span></h1>
-            </header>
             <div id="main-container">
                 <div id="content"></div>
                 <aside id="sidebar">

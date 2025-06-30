@@ -26,14 +26,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const hourKey = hour.toString().padStart(2, '0') + ":00";
             const currentProgram = schedule[dayOfWeek[dayIndex]]?.[hourKey];
 
+            // Always find and display the next program info
+            updateNextProgramInfo(schedule, dayIndex, hour);
+
             if (currentProgram && currentProgram.url) {
-                embedLiveStream(currentProgram, schedule, dayIndex, hour);
-                setupViewToggleListeners();
+                embedLiveStream(currentProgram);
             } else {
-                toggleScheduleView(true); // No program now, show the schedule immediately
+                showStandbyScreen();
             }
-            
-            // Setup listeners to close the schedule view
+            // Always setup the listeners
+            setupViewToggleListeners();
             setupCloseListeners();
         })
         .catch(error => {
@@ -154,16 +156,26 @@ document.addEventListener('DOMContentLoaded', () => {
         return null;
     }
 
-    function embedLiveStream(program, schedule, dayIndex, hour) {
+    function showStandbyScreen() {
         const contentDiv = document.getElementById('content');
-        contentDiv.innerHTML = '';
-        const iframe = document.createElement('iframe');
-        iframe.src = program.url;
-        iframe.setAttribute('frameborder', '0');
-        iframe.setAttribute('allow', 'accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
-        iframe.setAttribute('allowfullscreen', 'true');
-        contentDiv.appendChild(iframe);
+        const noLiveMessage = document.getElementById('no-live-message');
 
+        noLiveMessage.innerText = '這馬無咧播，期待後一个時段。嘛會使聽音樂';
+        noLiveMessage.style.display = 'block';
+
+        contentDiv.innerHTML = `
+            <iframe style="border-radius:12px" 
+                    src="https://open.spotify.com/embed/playlist/5X2giMLXlE2YWj3ZoRMk3U?utm_source=generator&theme=0" 
+                    width="100%" 
+                    height="100%" 
+                    frameBorder="0" 
+                    allowfullscreen="" 
+                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+                    loading="lazy">
+            </iframe>`;
+    }
+
+    function updateNextProgramInfo(schedule, dayIndex, hour) {
         const nextProgram = findNextProgram(schedule, dayIndex, hour);
         const nextProgramSpan = document.getElementById('next-program');
         if (nextProgram) {
@@ -171,6 +183,21 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             nextProgramSpan.innerText = '本週已無其他節目。';
         }
+    }
+
+    function embedLiveStream(program) {
+        const contentDiv = document.getElementById('content');
+        const noLiveMessage = document.getElementById('no-live-message');
+        
+        noLiveMessage.style.display = 'none'; // Hide the standby message
+        contentDiv.innerHTML = ''; // Clear standby content
+
+        const iframe = document.createElement('iframe');
+        iframe.src = program.url;
+        iframe.setAttribute('frameborder', '0');
+        iframe.setAttribute('allow', 'accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
+        iframe.setAttribute('allowfullscreen', 'true');
+        contentDiv.appendChild(iframe);
     }
 
     function displaySchedule(schedule, currentDayIndex, currentHour) {
