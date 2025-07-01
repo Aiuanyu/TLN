@@ -2,7 +2,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const appContainer = document.getElementById('app-container');
     let scheduleData = null;
     let isScheduleVisible = false;
-    let currentProgramState = {}; // Initialize with a non-null value to ensure the first check always runs
+    let currentProgramState = {}; // Initialize to ensure the first check always runs
+    let lastCheckedHour = -1;     // Initialize to ensure the first check always runs
 
     // --- Main Execution ---
     fetch('schedule.json')
@@ -221,7 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const contentDiv = document.getElementById('content');
         const programInfoEl = document.getElementById('program-info');
         
-        programInfoEl.innerHTML = `${program.channel} - ${program.program_name}，請點放送，嘛會使<a href="${program.url}" target="_blank" rel="noopener noreferrer">點去官方頁面</a>`;
+        programInfoEl.innerHTML = `${program.channel} - ${program.program_name}，請點放送，嘛會使<a href="${program.live_url}" target="_blank" rel="noopener noreferrer">點去官方頁面</a>`;
         programInfoEl.style.display = 'block';
         
         contentDiv.innerHTML = ''; // Clear standby content
@@ -231,14 +232,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; text-align: center; padding: 2rem;">
                     <h2>袂當直接佇遮放送</h2>
                     <p>台視新聞台因為頻道政策因素，無法度直接嵌入放送。</p>
-                    <a href="${program.url}" target="_blank" rel="noopener noreferrer" style="padding: 1rem 2rem; background-color: #c00; color: white; text-decoration: none; border-radius: 5px; font-size: 1.2rem; margin-top: 1rem;">
+                    <a href="${program.live_url}" target="_blank" rel="noopener noreferrer" style="padding: 1rem 2rem; background-color: #c00; color: white; text-decoration: none; border-radius: 5px; font-size: 1.2rem; margin-top: 1rem;">
                         點遮去官方頁面看
                     </a>
                 </div>
             `;
         } else {
             const iframe = document.createElement('iframe');
-            iframe.src = program.url;
+            iframe.src = program.embed_url;
             iframe.setAttribute('frameborder', '0');
             iframe.setAttribute('allow', 'accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
             iframe.setAttribute('allowfullscreen', 'true');
@@ -256,13 +257,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const hourKey = hour.toString().padStart(2, '0') + ":00";
         const targetProgram = scheduleData[dayOfWeek[dayIndex]]?.[hourKey];
 
-        // A more robust check: compare the program objects directly.
-        // JSON.stringify is a simple way to deep-compare the relevant data.
-        if (JSON.stringify(targetProgram) !== JSON.stringify(currentProgramState)) {
-            console.log(`Updating content for ${hourKey}. New program: ${targetProgram?.program_name || 'Standby'}`);
+        // A more robust check: compare the program objects directly AND check if the hour has changed.
+        if (JSON.stringify(targetProgram) !== JSON.stringify(currentProgramState) || hour !== lastCheckedHour) {
+            console.log(`Updating content for ${hourKey}. New program: ${targetProgram?.program_name || 'Standby'}. Hour changed: ${hour !== lastCheckedHour}`);
+            lastCheckedHour = hour; // Update the last checked hour
             
             // Update main content view
-            if (targetProgram && targetProgram.url) {
+            if (targetProgram && targetProgram.embed_url) {
                 embedLiveStream(targetProgram);
                 currentProgramState = targetProgram;
                 // If there's a live program, ensure the schedule is hidden by default
@@ -311,8 +312,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 const program = schedule[dayKeys[dayIndex]]?.[hourKey];
                 
                 if (program) {
-                    const channelDisplay = program.url
-                        ? `<a href="${program.url}" target="_blank" rel="noopener noreferrer">⛓️ ${program.channel}</a>`
+                    const channelDisplay = program.live_url
+                        ? `<a href="${program.live_url}" target="_blank" rel="noopener noreferrer">⛓️ ${program.channel}</a>`
                         : program.channel;
                     cell.innerHTML = `<div class="program-name">${program.program_name}</div><div class="channel-name">${channelDisplay}</div>`;
                 } else {
