@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .catch(error => {
             console.error('Error fetching schedule:', error);
             const contentDiv = document.getElementById('content');
-            if(contentDiv) contentDiv.innerText = '無法載入節目表。';
+            if(contentDiv) contentDiv.innerText = '無法度載入節目表。';
         });
 
     // --- View Toggling and Closing Logic ---
@@ -70,62 +70,70 @@ document.addEventListener('DOMContentLoaded', () => {
         const sidebar = document.getElementById('sidebar');
         const footer = document.getElementById('main-footer');
         const liveView = document.getElementById('live-view');
+        const header = document.getElementById('main-header'); // Get the header element
 
+        // --- Click Listeners ---
         sidebar.addEventListener('click', () => toggleScheduleView());
         footer.addEventListener('click', () => toggleScheduleView());
+        // It might be confusing to have the header also toggle, so we can omit it unless requested.
 
-        let touchstartY = 0, touchstartX = 0;
-        liveView.addEventListener('touchstart', e => {
-            touchstartY = e.changedTouches[0].screenY;
-            touchstartX = e.changedTouches[0].screenX;
-        }, { passive: true });
+        // --- Touch and Mouse Listeners for Swipe/Drag/Wheel ---
+        const swipeAreas = [liveView, header]; // Add header to the areas that detect swipes/drags
 
-        liveView.addEventListener('touchend', e => {
-            const touchendY = e.changedTouches[0].screenY;
-            const touchendX = e.changedTouches[0].screenX;
-            if (Math.abs(touchendY - touchstartY) > 50 || Math.abs(touchendX - touchstartX) > 50) {
-                toggleScheduleView();
-            }
-        });
+        swipeAreas.forEach(area => {
+            let touchstartY = 0, touchstartX = 0;
+            area.addEventListener('touchstart', e => {
+                touchstartY = e.changedTouches[0].screenY;
+                touchstartX = e.changedTouches[0].screenX;
+            }, { passive: true });
 
-        // Listen for mouse wheel events on desktop
-        liveView.addEventListener('wheel', e => {
-            // Check for significant movement in either X or Y direction
-            if (Math.abs(e.deltaY) > 1 || Math.abs(e.deltaX) > 1) {
-                e.preventDefault(); // Prevent the page from scrolling
-                toggleScheduleView();
-            }
-        }, { passive: false });
-
-        // Listen for mouse drag events on desktop
-        let isDragging = false;
-        let dragStartX = 0;
-        let dragStartY = 0;
-
-        liveView.addEventListener('mousedown', e => {
-            isDragging = true;
-            dragStartX = e.screenX;
-            dragStartY = e.screenY;
-        });
-
-        liveView.addEventListener('mousemove', e => {
-            if (isDragging) {
-                const deltaX = e.screenX - dragStartX;
-                const deltaY = e.screenY - dragStartY;
-                // Use a lower threshold for drag detection
-                if (Math.abs(deltaX) > 30 || Math.abs(deltaY) > 30) {
-                    isDragging = false; // Stop tracking after the first trigger
+            area.addEventListener('touchend', e => {
+                const touchendY = e.changedTouches[0].screenY;
+                const touchendX = e.changedTouches[0].screenX;
+                if (Math.abs(touchendY - touchstartY) > 50 || Math.abs(touchendX - touchstartX) > 50) {
                     toggleScheduleView();
                 }
-            }
-        });
+            });
 
-        liveView.addEventListener('mouseup', () => {
-            isDragging = false;
-        });
+            // Listen for mouse wheel events on desktop
+            area.addEventListener('wheel', e => {
+                // Check for significant movement in either X or Y direction
+                if (Math.abs(e.deltaY) > 1 || Math.abs(e.deltaX) > 1) {
+                    e.preventDefault(); // Prevent the page from scrolling
+                    toggleScheduleView();
+                }
+            }, { passive: false });
 
-        liveView.addEventListener('mouseleave', () => {
-            isDragging = false;
+            // Listen for mouse drag events on desktop
+            let isDragging = false;
+            let dragStartX = 0;
+            let dragStartY = 0;
+
+            area.addEventListener('mousedown', e => {
+                isDragging = true;
+                dragStartX = e.screenX;
+                dragStartY = e.screenY;
+            });
+
+            area.addEventListener('mousemove', e => {
+                if (isDragging) {
+                    const deltaX = e.screenX - dragStartX;
+                    const deltaY = e.screenY - dragStartY;
+                    // Use a lower threshold for drag detection
+                    if (Math.abs(deltaX) > 30 || Math.abs(deltaY) > 30) {
+                        isDragging = false; // Stop tracking after the first trigger
+                        toggleScheduleView();
+                    }
+                }
+            });
+
+            area.addEventListener('mouseup', () => {
+                isDragging = false;
+            });
+
+            area.addEventListener('mouseleave', () => {
+                isDragging = false;
+            });
         });
     }
 
@@ -176,7 +184,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const contentDiv = document.getElementById('content');
         const programInfoEl = document.getElementById('program-info');
 
-        programInfoEl.innerHTML = '這馬無咧播，期待後一个時段。<a href="#" id="listen-music-link">嘛會使聽音樂</a>';
+        programInfoEl.innerHTML = '這馬無咧播，期待後一个時段。<a href="#" id="listen-music-link">嘛會使聽寡臺灣味音樂</a>';
         programInfoEl.style.display = 'block';
 
         const listenLink = document.getElementById('listen-music-link');
@@ -205,7 +213,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (nextProgram) {
             nextProgramSpan.innerText = `${nextProgram.hour} - ${nextProgram.channel} - ${nextProgram.program_name}`;
         } else {
-            nextProgramSpan.innerText = '本週已無其他節目。';
+            nextProgramSpan.innerText = '這禮拜已經無其他節目。';
         }
     }
 
@@ -221,10 +229,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (program.channel === "台視新聞台") {
             contentDiv.innerHTML = `
                 <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; text-align: center; padding: 2rem;">
-                    <h2>無法直接在此播放</h2>
-                    <p>台視新聞台因頻道政策因素，無法直接嵌入播放。</p>
+                    <h2>袂當直接佇遮放送</h2>
+                    <p>台視新聞台因為頻道政策因素，無法度直接嵌入放送。</p>
                     <a href="${program.url}" target="_blank" rel="noopener noreferrer" style="padding: 1rem 2rem; background-color: #c00; color: white; text-decoration: none; border-radius: 5px; font-size: 1.2rem; margin-top: 1rem;">
-                        點此前往官方頁面觀看
+                        點遮去官方頁面看
                     </a>
                 </div>
             `;
@@ -286,7 +294,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const thead = document.createElement('thead');
         const headerRow = document.createElement('tr');
-        const daysHeader = ['時間', '星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+        const daysHeader = ['時間', '禮拜', '拜一', '拜二', '拜三', '拜四', '拜五', '拜六'];
         daysHeader.forEach(dayText => headerRow.appendChild(Object.assign(document.createElement('th'), { innerText: dayText })));
         thead.appendChild(headerRow);
         table.appendChild(thead);
