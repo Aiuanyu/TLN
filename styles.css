@@ -223,3 +223,134 @@ tbody tr:hover {
 .channel-name a:hover {
     color: #eafbd0;
 }
+
+
+#program-info a {
+    color: #eafbd0;
+    text-decoration: underline;
+}
+
+#program-info a:hover {
+    color: #678c3f;
+}
+
+.program-selection-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    padding: 2rem;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+.program-selection-card {
+    background-color: #3a3a3a;
+    border: 2px solid #678c3f;
+    border-radius: 10px;
+    padding: 2rem;
+    text-align: center;
+    width: 250px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.program-selection-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+}
+
+.program-selection-card h3 {
+    margin-top: 0;
+    color: #eafbd0;
+}
+
+.program-selection-card p {
+    color: #aa96b7;
+    font-style: italic;
+}
+
+.program-selection-card button,
+.program-selection-card a.official-link-button {
+    background-color: #678c3f;
+    color: #eafbd0;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    margin-top: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 1rem;
+    transition: background-color 0.2s;
+}
+
+.program-selection-card button:hover,
+.program-selection-card a.official-link-button:hover {
+    background-color: #89b45a;
+}
+
+.program-selection-card a.official-link-button {
+    background-color: #aa96b7;
+    color: #242424;
+}
+
+.program-selection-card a.official-link-button:hover {
+    background-color: #c3b5d0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 1.2rem;
+    }
+
+    #sidebar {
+        display: none; /* Hide sidebar on smaller screens */
+    }
+
+    #main-footer {
+        display: block; /* Show footer on smaller screens */
+    }
+}
+.program-part {
+    padding: 2px 8px;
+    border-radius: 5px;
+    margin: 0 2px;
+}
+
+.program-part-1 {
+    background-color: #678c3f;
+    color: #eafbd0;
+
+    .official-link {
+        color: #242424 !important;
+    }
+}
+
+.program-part-2 {
+    background-color: #aa96b7;
+    color: #242424;
+}
+
+.program-part a {
+    color: inherit !important;
+    text-decoration: underline;
+}
+
+.official-link {
+    background-color: #eafbd0;
+    color: #242424 !important;
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-weight: bold;
+}
+
+.simulation-mode #main-header {
+    background-color: #5c3c0a;
+}
+
+.simulation-mode h1 #current-time {
+    color: #ffcc80;
+}

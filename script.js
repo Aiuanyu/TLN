@@ -13,14 +13,32 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then(schedule => {
             scheduleData = schedule;
-            // Start the clock
-            updateTime();
-            setInterval(updateTime, 1000);
+
+            const simulatedTime = getSimulatedTime();
+            const isSimulated = simulatedTime !== null;
+
+            if (isSimulated) {
+                document.body.classList.add('simulation-mode');
+                const h1 = document.querySelector('#main-header h1');
+                if (h1) {
+                    h1.innerHTML = '規工看臺員話新聞，模擬時間：<span id="current-time"></span>';
+                }
+                updateTime(simulatedTime); // Update time with simulated time
+            } else {
+                updateTime(); // Initial call
+                setInterval(updateTime, 1000); // Update every second
+            }
 
             // Set initial content and start periodic checks for updates
             checkAndUpdateContent();
 
             function scheduleHourlyChecks() {
+                // If a test time is specified, don't schedule hourly checks
+                if (isSimulated) {
+                    console.log("Test time is active, hourly checks are disabled.");
+                    return;
+                }
+
                 const now = new Date();
                 // Set target to 5 seconds past the next hour for reliability
                 const nextHour = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours() + 1, 0, 5, 0);
@@ -150,10 +168,24 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Content Update Functions ---
-    function updateTime() {
+    function getSimulatedTime() {
+        const params = new URLSearchParams(window.location.search);
+        const testTime = params.get('test');
+        if (testTime && /^[0-2][0-9][0-5][0-9]$/.test(testTime)) {
+            const hours = parseInt(testTime.substring(0, 2), 10);
+            const minutes = parseInt(testTime.substring(2, 4), 10);
+            const simDate = new Date();
+            simDate.setHours(hours, minutes, 0, 0); // Set hours and minutes, reset seconds and ms
+            return simDate;
+        }
+        return null;
+    }
+
+
+    function updateTime(forcedTime = null) {
         const timeEl = document.getElementById('current-time');
         if (!timeEl) return;
-        const now = new Date();
+        const now = forcedTime || new Date();
         const year = now.getFullYear();
         const month = (now.getMonth() + 1).toString().padStart(2, '0');
         const date = now.getDate().toString().padStart(2, '0');
@@ -169,7 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const hourKey = h.toString().padStart(2, '0') + ":00";
             const programs = schedule[dayOfWeek[startDayIndex]]?.[hourKey];
             if (programs && programs.length > 0) {
-                return { hour: hourKey, ...programs[0] }; // Return the first program of that slot
+                return { hour: hourKey, programs: programs };
             }
         }
         // If nothing is found today, search the next 6 days
@@ -181,7 +213,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const hourKey = h.toString().padStart(2, '0') + ":00";
                     const programs = schedule[dayKey][hourKey];
                     if (programs && programs.length > 0) {
-                        return { hour: hourKey, ...programs[0] }; // Return the first program of that slot
+                        return { hour: hourKey, programs: programs };
                     }
                 }
             }
@@ -253,10 +285,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateNextProgramInfo(schedule, dayIndex, hour) {
-        const nextProgram = findNextProgram(schedule, dayIndex, hour);
+        const nextProgramSlot = findNextProgram(schedule, dayIndex, hour);
         const nextProgramSpan = document.getElementById('next-program');
-        if (nextProgram) {
-            nextProgramSpan.innerText = `${nextProgram.hour} - ${nextProgram.channel} - ${nextProgram.program_name}`;
+        if (nextProgramSlot && nextProgramSlot.programs.length > 0) {
+            const programTitles = nextProgramSlot.programs.map(p => `${p.channel} - ${p.program_name}`).join(' | ');
+            nextProgramSpan.innerText = `${nextProgramSlot.hour} - ${programTitles}`;
         } else {
             nextProgramSpan.innerText = '這禮拜已經無其他節目。';
         }
@@ -266,14 +299,21 @@ document.addEventListener('DOMContentLoaded', () => {
         const contentDiv = document.getElementById('content');
         const programInfoEl = document.getElementById('program-info');
         
-        let headerHTML = `${program.channel} - ${program.program_name}，請點放送，嘛會使<a href="${program.live_url}" target="_blank" rel="noopener noreferrer">點去官方頁面</a>`;
+        let headerHTML = '';
 
-        // If there are other programs in the same slot, add a link to switch
         if (allProgramsInSlot.length > 1) {
             const otherProgram = allProgramsInSlot.find(p => p.channel !== program.channel);
-            if (otherProgram) {
-                headerHTML += ` | <a href="#" id="switch-channel-link">切換到${otherProgram.channel} - ${otherProgram.program_name}</a>`;
-            }
+            
+            // The text for the currently selected program
+            const currentProgramHTML = `<span class="program-part program-part-1">${program.channel} - ${program.program_name}，請點放送，嘛會使<a href="${program.live_url}" target="_blank" rel="noopener noreferrer" class="official-link">點去官方頁面</a></span>`;
+            
+            // The text for the other program, which is a link to switch
+            const otherProgramHTML = `<span class="program-part program-part-2"><a href="#" id="switch-channel-link">切換到${otherProgram.channel} - ${otherProgram.program_name}</a></span>`;
+
+            headerHTML = currentProgramHTML + otherProgramHTML;
+
+        } else {
+            headerHTML = `${program.channel} - ${program.program_name}，請點放送，嘛會使<a href="${program.live_url}" target="_blank" rel="noopener noreferrer" class="official-link">點去官方頁面</a>`;
         }
         
         programInfoEl.innerHTML = headerHTML;
@@ -314,7 +354,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function checkAndUpdateContent() {
         if (!scheduleData) return;
 
-        const now = new Date();
+        const now = getSimulatedTime() || new Date();
         const dayIndex = now.getDay();
         const hour = now.getHours();
         const dayOfWeek = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
