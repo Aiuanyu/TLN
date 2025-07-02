@@ -91,6 +91,8 @@ for row in raw_data:
                 "embed_url": url_map[channel_name].get("embed_url")
             }
             programs_in_slot.append(program_info)
+        else:
+            print(f"Warning: Channel '{channel_name}' for program '{program_name.strip()}' not found in URLs.csv. Skipping this channel.")
 
     # If no valid channels were found for this row, skip it.
     if not programs_in_slot:

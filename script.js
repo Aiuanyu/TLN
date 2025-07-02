@@ -164,21 +164,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function findNextProgram(schedule, startDayIndex, startHour) {
         const dayOfWeek = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
+        // Start searching from the next hour of the current day
         for (let h = startHour + 1; h < 24; h++) {
             const hourKey = h.toString().padStart(2, '0') + ":00";
-            if (schedule[dayOfWeek[startDayIndex]]?.[hourKey]) return { hour: hourKey, ...schedule[dayOfWeek[startDayIndex]][hourKey] };
+            const programs = schedule[dayOfWeek[startDayIndex]]?.[hourKey];
+            if (programs && programs.length > 0) {
+                return { hour: hourKey, ...programs[0] }; // Return the first program of that slot
+            }
         }
+        // If nothing is found today, search the next 6 days
         for (let i = 1; i < 7; i++) {
             const dayIndex = (startDayIndex + i) % 7;
             const dayKey = dayOfWeek[dayIndex];
             if (schedule[dayKey]) {
                 for (let h = 0; h < 24; h++) {
                     const hourKey = h.toString().padStart(2, '0') + ":00";
-                    if (schedule[dayKey][hourKey]) return { hour: hourKey, ...schedule[dayKey][hourKey] };
+                    const programs = schedule[dayKey][hourKey];
+                    if (programs && programs.length > 0) {
+                        return { hour: hourKey, ...programs[0] }; // Return the first program of that slot
+                    }
                 }
             }
         }
-        return null;
+        return null; // Return null if no programs are found in the entire week
     }
 
     function showStandbyScreen() {
@@ -208,6 +216,42 @@ document.addEventListener('DOMContentLoaded', () => {
             </iframe>`;
     }
 
+    function showProgramSelection(programs) {
+        const contentDiv = document.getElementById('content');
+        const programInfoEl = document.getElementById('program-info');
+
+        programInfoEl.innerHTML = '這个時段有多元ê選擇，請點選一个頻道來收看：';
+        programInfoEl.style.display = 'block';
+
+        let selectionHTML = '<div class="program-selection-container">';
+        programs.forEach(program => {
+            selectionHTML += `
+                <div class="program-selection-card" data-embed-url="${program.embed_url}" data-live-url="${program.live_url}" data-channel="${program.channel}" data-program-name="${program.program_name}">
+                    <h3>${program.program_name}</h3>
+                    <p>${program.channel}</p>
+                    <button class="watch-button">佇遮看</button>
+                    <a href="${program.live_url}" target="_blank" rel="noopener noreferrer" class="official-link-button">去官網看</a>
+                </div>
+            `;
+        });
+        selectionHTML += '</div>';
+        contentDiv.innerHTML = selectionHTML;
+
+        // Add event listeners to the new buttons
+        document.querySelectorAll('.program-selection-card .watch-button').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const card = e.target.closest('.program-selection-card');
+                const program = {
+                    embed_url: card.dataset.embedUrl,
+                    live_url: card.dataset.liveUrl,
+                    channel: card.dataset.channel,
+                    program_name: card.dataset.programName
+                };
+                embedLiveStream(program, programs);
+            });
+        });
+    }
+
     function updateNextProgramInfo(schedule, dayIndex, hour) {
         const nextProgram = findNextProgram(schedule, dayIndex, hour);
         const nextProgramSpan = document.getElementById('next-program');
@@ -218,12 +262,32 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function embedLiveStream(program) {
+    function embedLiveStream(program, allProgramsInSlot = []) {
         const contentDiv = document.getElementById('content');
         const programInfoEl = document.getElementById('program-info');
         
-        programInfoEl.innerHTML = `${program.channel} - ${program.program_name}，請點放送，嘛會使<a href="${program.live_url}" target="_blank" rel="noopener noreferrer">點去官方頁面</a>`;
+        let headerHTML = `${program.channel} - ${program.program_name}，請點放送，嘛會使<a href="${program.live_url}" target="_blank" rel="noopener noreferrer">點去官方頁面</a>`;
+
+        // If there are other programs in the same slot, add a link to switch
+        if (allProgramsInSlot.length > 1) {
+            const otherProgram = allProgramsInSlot.find(p => p.channel !== program.channel);
+            if (otherProgram) {
+                headerHTML += ` | <a href="#" id="switch-channel-link">切換到${otherProgram.channel} - ${otherProgram.program_name}</a>`;
+            }
+        }
+        
+        programInfoEl.innerHTML = headerHTML;
         programInfoEl.style.display = 'block';
+
+        // Add click listener for the switch link if it exists
+        const switchLink = document.getElementById('switch-channel-link');
+        if (switchLink) {
+            const otherProgram = allProgramsInSlot.find(p => p.channel !== program.channel);
+            switchLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                embedLiveStream(otherProgram, allProgramsInSlot);
+            });
+        }
         
         contentDiv.innerHTML = ''; // Clear standby content
 
@@ -255,24 +319,29 @@ document.addEventListener('DOMContentLoaded', () => {
         const hour = now.getHours();
         const dayOfWeek = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
         const hourKey = hour.toString().padStart(2, '0') + ":00";
-        const targetProgram = scheduleData[dayOfWeek[dayIndex]]?.[hourKey];
+        const targetPrograms = scheduleData[dayOfWeek[dayIndex]]?.[hourKey]; // This is now an array
 
-        // A more robust check: compare the program objects directly AND check if the hour has changed.
-        if (JSON.stringify(targetProgram) !== JSON.stringify(currentProgramState) || hour !== lastCheckedHour) {
-            console.log(`Updating content for ${hourKey}. New program: ${targetProgram?.program_name || 'Standby'}. Hour changed: ${hour !== lastCheckedHour}`);
-            lastCheckedHour = hour; // Update the last checked hour
-            
+        // Check if the content has actually changed to prevent unnecessary DOM updates
+        if (JSON.stringify(targetPrograms) !== JSON.stringify(currentProgramState) || hour !== lastCheckedHour) {
+            console.log(`Updating content for ${hourKey}. Hour changed: ${hour !== lastCheckedHour}`);
+            lastCheckedHour = hour;
+            currentProgramState = targetPrograms;
+
             // Update main content view
-            if (targetProgram && targetProgram.embed_url) {
-                embedLiveStream(targetProgram);
-                currentProgramState = targetProgram;
+            if (targetPrograms && targetPrograms.length > 0) {
+                // If there is more than one program, show a selection screen.
+                if (targetPrograms.length > 1) {
+                    showProgramSelection(targetPrograms);
+                } else {
+                    // If there is only one, embed it directly.
+                    embedLiveStream(targetPrograms[0], targetPrograms);
+                }
                 // If there's a live program, ensure the schedule is hidden by default
                 if (isScheduleVisible) {
                     toggleScheduleView(false);
                 }
             } else {
                 showStandbyScreen();
-                currentProgramState = null;
                 // If there's no live program, show the schedule by default
                 if (!isScheduleVisible) {
                     toggleScheduleView(true);
@@ -309,20 +378,30 @@ document.addEventListener('DOMContentLoaded', () => {
             
             for (let dayIndex = 0; dayIndex < 7; dayIndex++) {
                 const cell = document.createElement('td');
-                const program = schedule[dayKeys[dayIndex]]?.[hourKey];
+                const programs = schedule[dayKeys[dayIndex]]?.[hourKey]; // This is now an array
                 
-                if (program) {
-                    const channelDisplay = program.live_url
-                        ? `<a href="${program.live_url}" target="_blank" rel="noopener noreferrer">⛓️ ${program.channel}</a>`
-                        : program.channel;
-                    cell.innerHTML = `<div class="program-name">${program.program_name}</div><div class="channel-name">${channelDisplay}</div>`;
+                if (programs && programs.length > 0) {
+                    let cellHTML = '';
+                    programs.forEach(program => {
+                        const channelDisplay = program.live_url
+                            ? `<a href="${program.live_url}" target="_blank" rel="noopener noreferrer">⛓️ ${program.channel}</a>`
+                            : program.channel;
+                        cellHTML += `<div class="program-entry"><div class="program-name">${program.program_name}</div><div class="channel-name">${channelDisplay}</div></div>`;
+                    });
+                    cell.innerHTML = cellHTML;
                 } else {
                     cell.innerHTML = ' - ';
                 }
 
                 if (dayIndex === currentDayIndex && hour === currentHour) {
                     cell.classList.add('current-timeslot');
-                    cell.innerHTML = `<b>這馬</b><br>` + cell.innerHTML;
+                    // Create a new div for the "這馬" text to control its style independently
+                    const nowIndicator = document.createElement('div');
+                    nowIndicator.innerHTML = '<b>這馬</b>';
+                    nowIndicator.style.textAlign = 'center';
+                    nowIndicator.style.fontWeight = 'bold';
+                    nowIndicator.style.marginBottom = '5px'; 
+                    cell.insertBefore(nowIndicator, cell.firstChild);
                     cell.addEventListener('click', () => toggleScheduleView(false));
                 }
                 row.appendChild(cell);
