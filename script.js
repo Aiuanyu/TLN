@@ -331,11 +331,11 @@ document.addEventListener('DOMContentLoaded', () => {
         
         contentDiv.innerHTML = ''; // Clear standby content
 
-        if (program.channel === "台視新聞台") {
+        if (program.channel === "台視新聞台" || program.channel === "台視主頻") {
             contentDiv.innerHTML = `
                 <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; text-align: center; padding: 2rem;">
                     <h2>袂當直接佇遮放送</h2>
-                    <p>台視新聞台因為頻道政策因素，無法度直接嵌入放送。</p>
+                    <p>${program.channel}因為頻道政策因素，無法度直接嵌入放送。</p>
                     <a href="${program.live_url}" target="_blank" rel="noopener noreferrer" style="padding: 1rem 2rem; background-color: #c00; color: white; text-decoration: none; border-radius: 5px; font-size: 1.2rem; margin-top: 1rem;">
                         點遮去官方頁面看
                     </a>
